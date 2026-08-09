@@ -3,7 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import axios from "axios";
 import { toast } from "sonner";
 import Swal from "sweetalert2";
-import { FolderTree, Plus, Edit, Trash2, X, Save } from "lucide-react";
+import { FaFolder, FaPlus, FaEdit, FaTrash, FaTimes, FaSave, FaMagic } from "react-icons/fa";
 
 export default function Categories() {
   const { token } = useAuth();
@@ -36,6 +36,22 @@ export default function Categories() {
       toast.error("Failed to load categories");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSeedDefaults = async () => {
+    try {
+      const baseUrl = import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api/v1";
+      const res = await axios.post(`${baseUrl}/stock/seed`, {}, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.data.status === "success") {
+        toast.success("Default categories, brands, units & warehouses seeded!");
+        fetchCategories();
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to seed defaults");
     }
   };
 
@@ -88,10 +104,8 @@ export default function Categories() {
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#ef4444",
-      cancelButtonColor: "#334155",
-      confirmButtonText: "Delete",
-      background: "#0f172a",
-      color: "#f8fafc",
+      cancelButtonColor: "#64748b",
+      confirmButtonText: "Yes, Delete",
     });
 
     if (res.isConfirmed) {
@@ -110,32 +124,42 @@ export default function Categories() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between bg-slate-900/80 p-5 rounded-2xl border border-slate-800">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-white flex items-center gap-2">
-            <FolderTree className="w-5 h-5 text-blue-400" />
+          <h1 className="text-2xl font-bold text-gray-800 tracking-tight flex items-center gap-2">
+            <FaFolder className="text-blue-600" />
             Product Categories Management
           </h1>
-          <p className="text-xs text-slate-400 mt-1">Organize products into hierarchical groupings and classifications</p>
+          <p className="text-xs text-gray-500 mt-1">Organize master products into logical categories</p>
         </div>
-        <button
-          onClick={handleOpenCreate}
-          className="px-3.5 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-semibold flex items-center gap-1.5 shadow-md shadow-blue-600/20 transition-all"
-        >
-          <Plus className="w-4 h-4" />
-          <span>Add Category</span>
-        </button>
+
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleSeedDefaults}
+            className="px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all"
+          >
+            <FaMagic />
+            <span>Seed Default Categories</span>
+          </button>
+          <button
+            onClick={handleOpenCreate}
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all"
+          >
+            <FaPlus />
+            <span>Add Category</span>
+          </button>
+        </div>
       </div>
 
-      <div className="bg-slate-900/80 border border-slate-800 rounded-2xl overflow-hidden">
+      <div className="bg-white border border-gray-100 rounded-xl shadow-sm overflow-hidden">
         {loading ? (
           <div className="p-8 text-center">
             <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-slate-300">
-              <thead className="bg-slate-800/80 text-slate-400 uppercase text-[10px] font-bold border-b border-slate-800">
+            <table className="w-full text-left text-xs text-gray-700">
+              <thead className="bg-gray-50 text-gray-500 uppercase text-[10px] font-bold border-b border-gray-100">
                 <tr>
                   <th className="py-3 px-4">Code</th>
                   <th className="py-3 px-4">Category Name</th>
@@ -144,19 +168,19 @@ export default function Categories() {
                   <th className="py-3 px-4 text-center">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60">
+              <tbody className="divide-y divide-gray-100">
                 {categories.length > 0 ? (
                   categories.map((c) => (
-                    <tr key={c._id} className="hover:bg-slate-800/40 transition-colors">
-                      <td className="py-3 px-4 font-mono text-blue-400 font-semibold">{c.code || "-"}</td>
-                      <td className="py-3 px-4 font-bold text-white">{c.name}</td>
-                      <td className="py-3 px-4 text-slate-400">{c.description || "-"}</td>
+                    <tr key={c._id} className="hover:bg-gray-50/60 transition-colors">
+                      <td className="py-3 px-4 font-mono text-blue-600 font-bold">{c.code || "-"}</td>
+                      <td className="py-3 px-4 font-bold text-gray-800">{c.name}</td>
+                      <td className="py-3 px-4 text-gray-500">{c.description || "-"}</td>
                       <td className="py-3 px-4 text-center">
                         <span
                           className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold ${
                             c.status === "active"
-                              ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-                              : "bg-slate-800 text-slate-500"
+                              ? "bg-emerald-50 text-emerald-600 border border-emerald-100"
+                              : "bg-gray-100 text-gray-500"
                           }`}
                         >
                           {c.status}
@@ -166,15 +190,15 @@ export default function Categories() {
                         <div className="flex items-center justify-center gap-2">
                           <button
                             onClick={() => handleOpenEdit(c)}
-                            className="p-1.5 bg-blue-600/20 hover:bg-blue-600 text-blue-400 hover:text-white rounded-lg transition-colors"
+                            className="p-1.5 bg-blue-50 hover:bg-blue-600 text-blue-600 hover:text-white rounded-lg transition-colors"
                           >
-                            <Edit className="w-3.5 h-3.5" />
+                            <FaEdit />
                           </button>
                           <button
                             onClick={() => handleDelete(c._id, c.name)}
-                            className="p-1.5 bg-rose-600/20 hover:bg-rose-600 text-rose-400 hover:text-white rounded-lg transition-colors"
+                            className="p-1.5 bg-rose-50 hover:bg-rose-600 text-rose-600 hover:text-white rounded-lg transition-colors"
                           >
-                            <Trash2 className="w-3.5 h-3.5" />
+                            <FaTrash />
                           </button>
                         </div>
                       </td>
@@ -182,8 +206,8 @@ export default function Categories() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={5} className="py-8 text-center text-slate-500">
-                      No categories created yet.
+                    <td colSpan={5} className="py-8 text-center text-gray-400">
+                      No categories created yet. Click "Seed Default Categories" above to load standard categories.
                     </td>
                   </tr>
                 )}
@@ -195,47 +219,47 @@ export default function Categories() {
 
       {/* Modal */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl relative">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-              <h3 className="text-sm font-bold text-white">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="bg-white border border-gray-200 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-xl relative">
+            <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+              <h3 className="text-sm font-bold text-gray-800">
                 {editingId ? "Edit Category" : "Create New Category"}
               </h3>
-              <button onClick={() => setModalOpen(false)} className="text-slate-400 hover:text-white">
-                <X className="w-4 h-4" />
+              <button onClick={() => setModalOpen(false)} className="text-gray-400 hover:text-gray-600">
+                <FaTimes />
               </button>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1">Category Name *</label>
+                <label className="block text-xs font-semibold text-gray-700 mb-1">Category Name *</label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. Electronics, Raw Materials"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-3.5 py-2 bg-slate-800 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3.5 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs text-gray-800 focus:outline-none focus:border-blue-500 focus:bg-white"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1">Category Code</label>
+                <label className="block text-xs font-semibold text-gray-700 mb-1">Category Code</label>
                 <input
                   type="text"
                   placeholder="e.g. CAT-ELE"
                   value={formData.code}
                   onChange={(e) => setFormData({ ...formData, code: e.target.value })}
-                  className="w-full px-3.5 py-2 bg-slate-800 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3.5 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs text-gray-800 focus:outline-none focus:border-blue-500 focus:bg-white"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1">Status</label>
+                <label className="block text-xs font-semibold text-gray-700 mb-1">Status</label>
                 <select
                   value={formData.status}
                   onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                  className="w-full px-3.5 py-2 bg-slate-800 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3.5 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs text-gray-800 focus:outline-none focus:border-blue-500 focus:bg-white"
                 >
                   <option value="active">Active</option>
                   <option value="inactive">Inactive</option>
@@ -243,29 +267,29 @@ export default function Categories() {
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1">Description</label>
+                <label className="block text-xs font-semibold text-gray-700 mb-1">Description</label>
                 <textarea
                   rows={2}
                   placeholder="Category notes..."
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full px-3.5 py-2 bg-slate-800 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-blue-500"
+                  className="w-full px-3.5 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs text-gray-800 focus:outline-none focus:border-blue-500 focus:bg-white"
                 ></textarea>
               </div>
 
-              <div className="flex justify-end gap-2 pt-2">
+              <div className="flex justify-end gap-2 pt-2 border-t border-gray-100">
                 <button
                   type="button"
                   onClick={() => setModalOpen(false)}
-                  className="px-4 py-2 bg-slate-800 text-slate-300 rounded-xl text-xs font-semibold"
+                  className="px-4 py-2 bg-gray-100 text-gray-700 rounded-xl text-xs font-bold"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-semibold flex items-center gap-1.5"
+                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm"
                 >
-                  <Save className="w-3.5 h-3.5" />
+                  <FaSave />
                   <span>Save Category</span>
                 </button>
               </div>
