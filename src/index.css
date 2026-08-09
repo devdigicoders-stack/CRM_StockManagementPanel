@@ -1,30 +1,64 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @layer base {
-  :root {
-    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  }
-
   body {
-    font-family: var(--font-sans);
-    background-color: #0f172a;
-    color: #f8fafc;
-    overflow-x: hidden;
+    @apply bg-[#f8fafc] text-slate-700 min-h-screen antialiased;
+    font-family: 'Inter', 'Outfit', system-ui, sans-serif;
   }
 }
 
-/* Custom Scrollbars */
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
+
 ::-webkit-scrollbar-track {
-  background: #1e293b;
+  @apply bg-slate-100;
 }
+
 ::-webkit-scrollbar-thumb {
-  background: #334155;
-  border-radius: 4px;
+  @apply bg-slate-300 rounded-full hover:bg-slate-400 transition-colors;
 }
-::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+
+/* Glass & Card overrides matching other panels */
+.glass {
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.glass-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+}
+
+.glass-card:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Custom badges */
+.badge {
+  @apply inline-flex items-center justify-center px-2.5 py-1 rounded-lg text-xs font-bold uppercase tracking-wider;
+}
+
+.badge-blue {
+  @apply bg-[#e0e7ff] text-[#4f46e5];
+}
+
+.badge-yellow {
+  @apply bg-[#fef3c7] text-[#d97706];
+}
+
+.badge-green {
+  @apply bg-[#dcfce7] text-[#16a34a];
+}
+
+.badge-gray {
+  @apply bg-[#f1f5f9] text-[#64748b];
+}
+
+.badge-red {
+  @apply bg-[#fee2e2] text-[#dc2626];
 }

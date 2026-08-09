@@ -1,25 +1,23 @@
-import {
-  LayoutDashboard,
-  Package,
-  PlusCircle,
-  FolderTree,
-  Tag,
-  Ruler,
-  Building2,
-  ArrowDownLeft,
-  ArrowUpRight,
-  ShoppingCart,
-  Sliders,
-  Boxes,
-  AlertTriangle,
-  History,
-  FileSpreadsheet,
-  Download,
-  FileUp,
-  KeyRound,
-  FileEdit
-} from "lucide-react";
 import React from "react";
+import {
+  FaTachometerAlt,
+  FaBoxes,
+  FaPlusCircle,
+  FaFolder,
+  FaTags,
+  FaRuler,
+  FaWarehouse,
+  FaArrowDown,
+  FaArrowUp,
+  FaShoppingCart,
+  FaSlidersH,
+  FaExclamationTriangle,
+  FaHistory,
+  FaFileExcel,
+  FaDownload,
+  FaFileImport,
+  FaKey
+} from "react-icons/fa";
 
 // Lazy load pages for performance
 const Dashboard = React.lazy(() => import("../pages/Dashboard"));
@@ -47,50 +45,50 @@ export const sidebarNavigation = [
   {
     title: "Main",
     items: [
-      { name: "Dashboard", path: "/dashboard", icon: LayoutDashboard, component: Dashboard },
+      { name: "Dashboard", path: "/dashboard", icon: FaTachometerAlt, component: Dashboard },
     ]
   },
   {
     title: "Catalog Management",
     items: [
-      { name: "All Products", path: "/products", icon: Package, component: Products },
-      { name: "Add New Product", path: "/products/add", icon: PlusCircle, component: AddProduct },
-      { name: "Categories", path: "/categories", icon: FolderTree, component: Categories },
-      { name: "Brands", path: "/brands", icon: Tag, component: Brands },
-      { name: "Units of Measure", path: "/units", icon: Ruler, component: Units },
-      { name: "Warehouses / Locations", path: "/warehouses", icon: Building2, component: Warehouses },
+      { name: "All Products", path: "/products", icon: FaBoxes, component: Products },
+      { name: "Add New Product", path: "/products/add", icon: FaPlusCircle, component: AddProduct },
+      { name: "Categories", path: "/categories", icon: FaFolder, component: Categories },
+      { name: "Brands", path: "/brands", icon: FaTags, component: Brands },
+      { name: "Units of Measure", path: "/units", icon: FaRuler, component: Units },
+      { name: "Warehouses / Locations", path: "/warehouses", icon: FaWarehouse, component: Warehouses },
     ]
   },
   {
     title: "Stock Operations",
     items: [
-      { name: "Stock In Entry", path: "/stock/in", icon: ArrowDownLeft, component: StockIn },
-      { name: "Stock Out Entry", path: "/stock/out", icon: ArrowUpRight, component: StockOut },
-      { name: "Purchase Entry", path: "/stock/purchase", icon: ShoppingCart, component: PurchaseEntry },
-      { name: "Opening Stock", path: "/stock/opening", icon: Boxes, component: OpeningStock },
-      { name: "Stock Adjustment", path: "/stock/adjustment", icon: Sliders, component: StockAdjustment },
+      { name: "Stock In Entry", path: "/stock/in", icon: FaArrowDown, component: StockIn },
+      { name: "Stock Out Entry", path: "/stock/out", icon: FaArrowUp, component: StockOut },
+      { name: "Purchase Entry", path: "/stock/purchase", icon: FaShoppingCart, component: PurchaseEntry },
+      { name: "Opening Stock", path: "/stock/opening", icon: FaBoxes, component: OpeningStock },
+      { name: "Stock Adjustment", path: "/stock/adjustment", icon: FaSlidersH, component: StockAdjustment },
     ]
   },
   {
     title: "Inventory Tracking",
     items: [
-      { name: "Stock Availability", path: "/stock/availability", icon: Boxes, component: StockAvailability },
-      { name: "Low Stock Alerts", path: "/stock/low-alerts", icon: AlertTriangle, component: LowStockAlerts },
-      { name: "Stock History", path: "/stock/history", icon: History, component: StockHistory },
+      { name: "Stock Availability", path: "/stock/availability", icon: FaBoxes, component: StockAvailability },
+      { name: "Low Stock Alerts", path: "/stock/low-alerts", icon: FaExclamationTriangle, component: LowStockAlerts },
+      { name: "Stock History", path: "/stock/history", icon: FaHistory, component: StockHistory },
     ]
   },
   {
     title: "Reports & Data",
     items: [
-      { name: "Inventory Reports", path: "/reports/inventory", icon: FileSpreadsheet, component: InventoryReports },
-      { name: "Download Reports", path: "/reports/download", icon: Download, component: DownloadReports },
-      { name: "Import / Export", path: "/products/import-export", icon: FileUp, component: ImportExportProducts },
+      { name: "Inventory Reports", path: "/reports/inventory", icon: FaFileExcel, component: InventoryReports },
+      { name: "Download Reports", path: "/reports/download", icon: FaDownload, component: DownloadReports },
+      { name: "Import / Export", path: "/products/import-export", icon: FaFileImport, component: ImportExportProducts },
     ]
   },
   {
     title: "Account Settings",
     items: [
-      { name: "Change Password", path: "/change-password", icon: KeyRound, component: ChangePassword },
+      { name: "Change Password", path: "/change-password", icon: FaKey, component: ChangePassword },
     ]
   }
 ];
