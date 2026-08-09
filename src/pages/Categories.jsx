@@ -135,13 +135,6 @@ export default function Categories() {
 
         <div className="flex items-center gap-2">
           <button
-            onClick={handleSeedDefaults}
-            className="px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all"
-          >
-            <FaMagic />
-            <span>Seed Default Categories</span>
-          </button>
-          <button
             onClick={handleOpenCreate}
             className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all"
           >
@@ -207,7 +200,7 @@ export default function Categories() {
                 ) : (
                   <tr>
                     <td colSpan={5} className="py-8 text-center text-gray-400">
-                      No categories created yet. Click "Seed Default Categories" above to load standard categories.
+                      No categories created yet.
                     </td>
                   </tr>
                 )}
