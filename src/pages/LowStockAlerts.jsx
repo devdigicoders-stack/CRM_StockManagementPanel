@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { AlertTriangle, PlusCircle, ArrowDownLeft, RefreshCw } from "lucide-react";
+import { FaExclamationTriangle, FaArrowDown, FaSync } from "react-icons/fa";
+
 
 export default function LowStockAlerts() {
   const { token } = useAuth();
@@ -28,34 +29,35 @@ export default function LowStockAlerts() {
     }
   };
 
+
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between bg-slate-900/80 p-5 rounded-2xl border border-slate-800">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-white flex items-center gap-2">
-            <AlertTriangle className="w-5 h-5 text-amber-400" />
+          <h1 className="text-2xl font-bold text-gray-800 tracking-tight flex items-center gap-2">
+            <FaExclamationTriangle className="text-amber-500" />
             Low Stock Alerts & Reorder List
           </h1>
-          <p className="text-xs text-slate-400 mt-1">Products at or below safety stock threshold requiring restocking</p>
+          <p className="text-xs text-gray-500 mt-1">Products at or below safety stock threshold requiring restocking</p>
         </div>
         <button
           onClick={fetchLowStock}
-          className="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all"
+          className="px-4 py-2 bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all"
         >
-          <RefreshCw className="w-4 h-4" />
+          <FaSync />
           <span>Refresh Alerts</span>
         </button>
       </div>
 
-      <div className="bg-slate-900/80 border border-slate-800 rounded-2xl overflow-hidden">
+      <div className="bg-white border border-gray-100 rounded-xl shadow-sm overflow-hidden">
         {loading ? (
           <div className="p-8 text-center">
             <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-amber-500 mx-auto"></div>
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-slate-300">
-              <thead className="bg-slate-800/80 text-slate-400 uppercase text-[10px] font-bold border-b border-slate-800">
+            <table className="w-full text-left text-xs text-gray-700">
+              <thead className="bg-gray-50 text-gray-500 uppercase text-[10px] font-bold border-b border-gray-100">
                 <tr>
                   <th className="py-3 px-4">SKU</th>
                   <th className="py-3 px-4">Product Name</th>
@@ -66,28 +68,28 @@ export default function LowStockAlerts() {
                   <th className="py-3 px-4 text-center">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60">
+              <tbody className="divide-y divide-gray-100">
                 {products.length > 0 ? (
                   products.map((p) => {
                     const deficit = Math.max(0, p.minStockLevel - p.currentStock);
                     return (
-                      <tr key={p._id} className="hover:bg-slate-800/40 transition-colors">
-                        <td className="py-3 px-4 font-mono text-amber-400 font-semibold">{p.sku}</td>
-                        <td className="py-3 px-4 font-bold text-white">{p.name}</td>
-                        <td className="py-3 px-4 text-slate-300">{p.category?.name || "-"}</td>
+                      <tr key={p._id} className="hover:bg-gray-50/60 transition-colors">
+                        <td className="py-3 px-4 font-mono text-amber-500 font-bold">{p.sku}</td>
+                        <td className="py-3 px-4 font-bold text-gray-800">{p.name}</td>
+                        <td className="py-3 px-4 text-gray-600">{p.category?.name || "-"}</td>
                         <td className="py-3 px-4 text-center">
-                          <span className="px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-rose-500/20 text-rose-400 border border-rose-500/30">
+                          <span className="px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-rose-50 text-rose-600 border border-rose-100">
                             {p.currentStock} {p.unit?.shortName || "units"}
                           </span>
                         </td>
-                        <td className="py-3 px-4 text-center text-slate-400 font-semibold">{p.minStockLevel}</td>
-                        <td className="py-3 px-4 text-center font-bold text-amber-400">+{deficit} needed</td>
+                        <td className="py-3 px-4 text-center text-gray-500 font-semibold">{p.minStockLevel}</td>
+                        <td className="py-3 px-4 text-center font-bold text-amber-600">+{deficit} needed</td>
                         <td className="py-3 px-4 text-center">
                           <Link
                             to="/stock/in"
-                            className="inline-flex items-center gap-1 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold shadow-sm transition-all"
+                            className="inline-flex items-center gap-1 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold shadow-sm transition-all"
                           >
-                            <ArrowDownLeft className="w-3.5 h-3.5" />
+                            <FaArrowDown />
                             <span>Stock In Now</span>
                           </Link>
                         </td>
@@ -96,7 +98,7 @@ export default function LowStockAlerts() {
                   })
                 ) : (
                   <tr>
-                    <td colSpan={7} className="py-12 text-center text-emerald-400 font-medium">
+                    <td colSpan={7} className="py-12 text-center text-emerald-600 font-medium">
                       ✓ All product stock levels are above minimum threshold safety limits.
                     </td>
                   </tr>

@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
-import { Download, FileSpreadsheet, FileText, Package } from "lucide-react";
+import { FaDownload, FaFileExcel, FaFilePdf, FaBoxes } from "react-icons/fa";
 
 export default function DownloadReports() {
   const { token } = useAuth();
@@ -136,70 +136,70 @@ export default function DownloadReports() {
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
-      <div className="bg-slate-900/80 p-5 rounded-2xl border border-slate-800">
-        <h1 className="text-xl font-bold text-white flex items-center gap-2">
-          <Download className="w-5 h-5 text-blue-400" />
+      <div>
+        <h1 className="text-2xl font-bold text-gray-800 tracking-tight flex items-center gap-2">
+          <FaDownload className="text-blue-600" />
           Download Stock & Inventory Reports
         </h1>
-        <p className="text-xs text-slate-400 mt-1">Export official PDF documents and Excel datasheets for accounting and audits</p>
+        <p className="text-xs text-gray-500 mt-1">Export official PDF documents and Excel datasheets for accounting and audits</p>
       </div>
 
       {loading ? (
-        <div className="p-8 text-center">
+        <div className="p-8 text-center bg-white border border-gray-100 rounded-xl shadow-sm">
           <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {/* Card 1: PDF Inventory */}
-          <div className="p-6 bg-slate-900/90 border border-slate-800 rounded-2xl space-y-4 hover:border-blue-500/50 transition-all shadow-lg">
-            <div className="w-12 h-12 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-400">
-              <FileText className="w-6 h-6" />
+          <div className="p-6 bg-white border border-gray-100 rounded-2xl space-y-4 hover:border-blue-500/50 transition-all shadow-sm">
+            <div className="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-100 flex items-center justify-center text-rose-500">
+              <FaFilePdf className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-white">Current Stock PDF Report</h3>
-              <p className="text-xs text-slate-400 mt-1">Formal PDF inventory report with product pricing, quantities, and asset valuation.</p>
+              <h3 className="text-base font-bold text-gray-800">Current Stock PDF Report</h3>
+              <p className="text-xs text-gray-500 mt-1">Formal PDF inventory report with product pricing, quantities, and asset valuation.</p>
             </div>
             <button
               onClick={exportStockPdf}
-              className="w-full py-2.5 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-xs font-semibold shadow-md shadow-rose-600/20 flex items-center justify-center gap-2 transition-all"
+              className="w-full py-2.5 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-xs font-bold shadow-md flex items-center justify-center gap-2 transition-all"
             >
-              <Download className="w-4 h-4" />
+              <FaDownload />
               <span>Download Stock PDF</span>
             </button>
           </div>
 
           {/* Card 2: Excel Inventory */}
-          <div className="p-6 bg-slate-900/90 border border-slate-800 rounded-2xl space-y-4 hover:border-emerald-500/50 transition-all shadow-lg">
-            <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
-              <FileSpreadsheet className="w-6 h-6" />
+          <div className="p-6 bg-white border border-gray-100 rounded-2xl space-y-4 hover:border-emerald-500/50 transition-all shadow-sm">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-500">
+              <FaFileExcel className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-white">Full Stock Excel Spreadsheet</h3>
-              <p className="text-xs text-slate-400 mt-1">Complete raw product catalog data sheet including categories, brands, prices, and stock levels.</p>
+              <h3 className="text-base font-bold text-gray-800">Full Stock Excel Spreadsheet</h3>
+              <p className="text-xs text-gray-500 mt-1">Complete raw product catalog data sheet including categories, brands, prices, and stock levels.</p>
             </div>
             <button
               onClick={exportStockExcel}
-              className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-semibold shadow-md shadow-emerald-600/20 flex items-center justify-center gap-2 transition-all"
+              className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold shadow-md flex items-center justify-center gap-2 transition-all"
             >
-              <Download className="w-4 h-4" />
+              <FaDownload />
               <span>Download Stock Excel</span>
             </button>
           </div>
 
           {/* Card 3: PDF Movements Audit */}
-          <div className="p-6 bg-slate-900/90 border border-slate-800 rounded-2xl space-y-4 hover:border-indigo-500/50 transition-all shadow-lg sm:col-span-2">
-            <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
-              <Package className="w-6 h-6" />
+          <div className="p-6 bg-white border border-gray-100 rounded-2xl space-y-4 hover:border-indigo-500/50 transition-all shadow-sm sm:col-span-2">
+            <div className="w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-500">
+              <FaBoxes className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-white">Stock Movement Audit PDF Report</h3>
-              <p className="text-xs text-slate-400 mt-1">Audit log document containing all recorded Stock In, Stock Out, Purchase entries, and Adjustments.</p>
+              <h3 className="text-base font-bold text-gray-800">Stock Movement Audit PDF Report</h3>
+              <p className="text-xs text-gray-500 mt-1">Audit log document containing all recorded Stock In, Stock Out, Purchase entries, and Adjustments.</p>
             </div>
             <button
               onClick={exportMovementsPdf}
-              className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold shadow-md shadow-indigo-600/20 flex items-center justify-center gap-2 transition-all"
+              className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold shadow-md flex items-center justify-center gap-2 transition-all"
             >
-              <Download className="w-4 h-4" />
+              <FaDownload />
               <span>Download Movement Audit PDF</span>
             </button>
           </div>

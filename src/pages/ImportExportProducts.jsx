@@ -3,7 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import axios from "axios";
 import { toast } from "sonner";
 import * as XLSX from "xlsx";
-import { FileUp, Download, UploadCloud, FileSpreadsheet, CheckCircle2 } from "lucide-react";
+import { FaFileImport, FaDownload, FaUpload, FaCheckCircle, FaFileExcel } from "react-icons/fa";
 
 export default function ImportExportProducts() {
   const { token } = useAuth();
@@ -30,47 +30,47 @@ export default function ImportExportProducts() {
     }
   };
 
-  // Download Sample Template
   const downloadSampleTemplate = () => {
-    const sampleData = [
+    const templateData = [
       {
-        SKU: "SKU-SAMPLE1",
-        Name: "Sample LED Monitor 24inch",
-        PurchasePrice: 8500,
-        SellingPrice: 11000,
-        MinStockLevel: 5,
-        OpeningStock: 20,
-        Description: "High resolution LED monitor",
+        SKU: "PROD-101",
+        Name: "Wireless Optical Mouse",
+        Category: "Electronics",
+        Brand: "Logitech",
+        Unit: "pcs",
+        "Purchase Price": 450,
+        "Selling Price": 799,
+        "Min Stock Level": 10,
+        "Opening Stock": 50,
+        Description: "Ergonomic 2.4GHz wireless optical mouse",
       },
       {
-        SKU: "SKU-SAMPLE2",
-        Name: "Wireless Ergonomic Mouse",
-        PurchasePrice: 450,
-        SellingPrice: 799,
-        MinStockLevel: 10,
-        OpeningStock: 50,
-        Description: "2.4GHz Wireless Mouse",
+        SKU: "PROD-102",
+        Name: "LED Desk Lamp",
+        Category: "Home & Office Appliances",
+        Brand: "Philips",
+        Unit: "pcs",
+        "Purchase Price": 850,
+        "Selling Price": 1499,
+        "Min Stock Level": 5,
+        "Opening Stock": 20,
+        Description: "Touch dimmable LED table lamp",
       },
     ];
 
-    const ws = XLSX.utils.json_to_sheet(sampleData);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Sample_Template");
-    XLSX.writeFile(wb, "Product_Import_Sample_Template.xlsx");
-    toast.success("Sample template downloaded!");
+    const worksheet = XLSX.utils.json_to_sheet(templateData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Sample_Template");
+    XLSX.writeFile(workbook, "Sample_Product_Import_Template.xlsx");
   };
 
-  // Handle File Import
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    if (categories.length === 0 || units.length === 0) {
-      return toast.error("Please add at least 1 Category and 1 Unit of Measure in system before importing products.");
-    }
-
     setImporting(true);
     const reader = new FileReader();
+
     reader.onload = async (evt) => {
       try {
         const bstr = evt.target.result;
@@ -79,43 +79,23 @@ export default function ImportExportProducts() {
         const ws = wb.Sheets[wsname];
         const data = XLSX.utils.sheet_to_json(ws);
 
-        if (!data || data.length === 0) {
-          toast.error("File is empty or invalid format");
+        if (data.length === 0) {
+          toast.error("Excel sheet is empty");
           setImporting(false);
           return;
         }
 
         const baseUrl = import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api/v1";
-        const defaultCat = categories[0]._id;
-        const defaultUnit = units[0]._id;
-        let successCount = 0;
+        const res = await axios.post(
+          `${baseUrl}/stock/products/import-bulk`,
+          { products: data },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
 
-        for (const item of data) {
-          if (!item.Name) continue;
-          try {
-            await axios.post(
-              `${baseUrl}/stock/products`,
-              {
-                sku: item.SKU || `SKU-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
-                name: item.Name,
-                category: defaultCat,
-                unit: defaultUnit,
-                purchasePrice: Number(item.PurchasePrice) || 0,
-                sellingPrice: Number(item.SellingPrice) || 0,
-                minStockLevel: Number(item.MinStockLevel) || 5,
-                openingStock: Number(item.OpeningStock) || 0,
-                description: item.Description || "Imported via bulk sheet",
-              },
-              { headers: { Authorization: `Bearer ${token}` } }
-            );
-            successCount++;
-          } catch (err) {
-            console.error("Row import error", err);
-          }
+        if (res.data.status === "success") {
+          toast.success(`Successfully imported ${res.data.count} products!`);
+          setImportedCount(res.data.count);
         }
-
-        setImportedCount(successCount);
-        toast.success(`Successfully imported ${successCount} products!`);
       } catch (err) {
         console.error(err);
         toast.error("Failed to parse or process import file");
@@ -130,42 +110,42 @@ export default function ImportExportProducts() {
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
-      <div className="bg-slate-900/80 p-5 rounded-2xl border border-slate-800">
-        <h1 className="text-xl font-bold text-white flex items-center gap-2">
-          <FileUp className="w-5 h-5 text-blue-400" />
+      <div>
+        <h1 className="text-2xl font-bold text-gray-800 tracking-tight flex items-center gap-2">
+          <FaFileImport className="text-blue-600" />
           Import & Export Products
         </h1>
-        <p className="text-xs text-slate-400 mt-1">Bulk upload inventory catalog via Excel/CSV spreadsheets or export master data</p>
+        <p className="text-xs text-gray-500 mt-1">Bulk upload inventory catalog via Excel/CSV spreadsheets or export master data</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Import Section */}
-        <div className="p-6 bg-slate-900/90 border border-slate-800 rounded-2xl space-y-4 shadow-lg">
+        <div className="p-6 bg-white border border-gray-100 rounded-2xl space-y-4 shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="p-3 bg-blue-500/10 text-blue-400 rounded-xl border border-blue-500/20">
-              <UploadCloud className="w-6 h-6" />
+            <div className="p-3 bg-blue-50 text-blue-600 rounded-xl border border-blue-100">
+              <FaUpload className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-white">Bulk Import Products</h3>
-              <p className="text-xs text-slate-400">Upload Excel (.xlsx) file</p>
+              <h3 className="text-sm font-bold text-gray-800">Bulk Import Products</h3>
+              <p className="text-xs text-gray-400">Upload Excel (.xlsx) file</p>
             </div>
           </div>
 
-          <p className="text-xs text-slate-300 leading-relaxed">
+          <p className="text-xs text-gray-500 leading-relaxed">
             Download our standardized sample template first. Populate product title, SKU, purchase price, selling price, and opening stock count.
           </p>
 
           <div className="pt-2 space-y-3">
             <button
               onClick={downloadSampleTemplate}
-              className="w-full py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all"
+              className="w-full py-2 bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all"
             >
-              <Download className="w-4 h-4 text-blue-400" />
+              <FaDownload className="text-blue-600" />
               <span>Download Sample Excel Template</span>
             </button>
 
-            <label className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-semibold shadow-md shadow-blue-600/20 flex items-center justify-center gap-2 cursor-pointer transition-all">
-              <FileSpreadsheet className="w-4 h-4" />
+            <label className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-sm flex items-center justify-center gap-2 cursor-pointer transition-all">
+              <FaFileExcel />
               <span>{importing ? "Processing Import..." : "Select File to Upload & Import"}</span>
               <input
                 type="file"
@@ -178,28 +158,28 @@ export default function ImportExportProducts() {
           </div>
 
           {importedCount > 0 && (
-            <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center gap-2 text-xs text-emerald-400">
-              <CheckCircle2 className="w-4 h-4" />
+            <div className="p-3 bg-emerald-50 border border-emerald-100 rounded-xl flex items-center gap-2 text-xs text-emerald-600">
+              <FaCheckCircle />
               <span>Last Import Success: {importedCount} products created</span>
             </div>
           )}
         </div>
 
         {/* Export Section */}
-        <div className="p-6 bg-slate-900/90 border border-slate-800 rounded-2xl space-y-4 shadow-lg flex flex-col justify-between">
+        <div className="p-6 bg-white border border-gray-100 rounded-2xl space-y-4 shadow-sm flex flex-col justify-between">
           <div>
             <div className="flex items-center gap-3 mb-4">
-              <div className="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl border border-emerald-500/20">
-                <FileSpreadsheet className="w-6 h-6" />
+              <div className="p-3 bg-emerald-50 text-emerald-600 rounded-xl border border-emerald-100">
+                <FaFileExcel className="w-6 h-6" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-white">Export Master Catalog</h3>
-                <p className="text-xs text-slate-400">Download Excel Spreadsheet</p>
+                <h3 className="text-sm font-bold text-gray-800">Export Master Catalog</h3>
+                <p className="text-xs text-gray-400">Download Excel Spreadsheet</p>
               </div>
             </div>
 
-            <p className="text-xs text-slate-300 leading-relaxed">
-              Export all currently active and inactive product listings from the system database into a full Excel file for offline backup or distribution.
+            <p className="text-xs text-gray-500 leading-relaxed">
+              Export all existing product master information including live stock quantity levels, unit descriptions, and brand records.
             </p>
           </div>
 
@@ -207,10 +187,10 @@ export default function ImportExportProducts() {
             href={`${import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api/v1"}/stock/products/export`}
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-semibold shadow-md shadow-emerald-600/20 flex items-center justify-center gap-2 transition-all text-center"
+            className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold shadow-sm flex items-center justify-center gap-2 transition-all text-center"
           >
-            <Download className="w-4 h-4" />
-            <span>Export Products to Excel</span>
+            <FaDownload />
+            <span>Export Product Catalog</span>
           </a>
         </div>
       </div>

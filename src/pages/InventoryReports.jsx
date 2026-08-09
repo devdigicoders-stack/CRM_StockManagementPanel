@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import axios from "axios";
-import { FileSpreadsheet, IndianRupee, Boxes, AlertTriangle, Layers } from "lucide-react";
+import { FaFileExcel, FaRupeeSign, FaBoxes, FaExclamationTriangle, FaLayerGroup } from "react-icons/fa";
 
 export default function InventoryReports() {
   const { token } = useAuth();
@@ -33,48 +33,48 @@ export default function InventoryReports() {
 
   return (
     <div className="space-y-6">
-      <div className="bg-slate-900/80 p-5 rounded-2xl border border-slate-800">
-        <h1 className="text-xl font-bold text-white flex items-center gap-2">
-          <FileSpreadsheet className="w-5 h-5 text-indigo-400" />
+      <div>
+        <h1 className="text-2xl font-bold text-gray-800 tracking-tight flex items-center gap-2">
+          <FaFileExcel className="text-indigo-600" />
           Inventory Summary & Valuation Reports
         </h1>
-        <p className="text-xs text-slate-400 mt-1">Valuation insights, asset breakdown, and catalog stock health</p>
+        <p className="text-xs text-gray-500 mt-1">Valuation insights, asset breakdown, and catalog stock health</p>
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="p-5 bg-gradient-to-br from-indigo-600/20 to-indigo-500/10 border border-indigo-500/30 rounded-2xl">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <div className="p-6 bg-white border border-gray-100 rounded-xl shadow-sm">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-semibold text-slate-300">Total Inventory Valuation</span>
-            <IndianRupee className="w-5 h-5 text-indigo-400" />
+            <span className="text-xs font-semibold text-gray-500">Total Inventory Valuation</span>
+            <FaRupeeSign className="text-indigo-600 text-lg" />
           </div>
-          <p className="text-2xl font-extrabold text-white">₹{totalValue.toLocaleString("en-IN")}</p>
-          <p className="text-[11px] text-slate-400 mt-1">Based on purchase unit prices</p>
+          <p className="text-2xl font-extrabold text-gray-800">₹{totalValue.toLocaleString("en-IN")}</p>
+          <p className="text-[11px] text-gray-400 mt-1">Based on purchase unit prices</p>
         </div>
 
-        <div className="p-5 bg-gradient-to-br from-emerald-600/20 to-emerald-500/10 border border-emerald-500/30 rounded-2xl">
+        <div className="p-6 bg-white border border-gray-100 rounded-xl shadow-sm">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-semibold text-slate-300">Total Units in Stock</span>
-            <Boxes className="w-5 h-5 text-emerald-400" />
+            <span className="text-xs font-semibold text-gray-500">Total Units in Stock</span>
+            <FaBoxes className="text-emerald-600 text-lg" />
           </div>
-          <p className="text-2xl font-extrabold text-white">{totalItems.toLocaleString("en-IN")}</p>
-          <p className="text-[11px] text-slate-400 mt-1">Across all product lines</p>
+          <p className="text-2xl font-extrabold text-gray-800">{totalItems.toLocaleString("en-IN")}</p>
+          <p className="text-[11px] text-gray-400 mt-1">Across all product lines</p>
         </div>
 
-        <div className="p-5 bg-gradient-to-br from-amber-600/20 to-amber-500/10 border border-amber-500/30 rounded-2xl">
+        <div className="p-6 bg-white border border-gray-100 rounded-xl shadow-sm">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-semibold text-slate-300">Low Stock Products</span>
-            <AlertTriangle className="w-5 h-5 text-amber-400" />
+            <span className="text-xs font-semibold text-gray-500">Low Stock Products</span>
+            <FaExclamationTriangle className="text-amber-500 text-lg" />
           </div>
-          <p className="text-2xl font-extrabold text-white">{lowStockItems}</p>
-          <p className="text-[11px] text-slate-400 mt-1">At or below safety limits</p>
+          <p className="text-2xl font-extrabold text-gray-800">{lowStockItems}</p>
+          <p className="text-[11px] text-gray-400 mt-1">At or below safety limits</p>
         </div>
       </div>
 
       {/* Product Valuation Breakdown */}
-      <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 space-y-4">
-        <h3 className="text-sm font-bold text-white flex items-center gap-2 border-b border-slate-800 pb-3">
-          <Layers className="w-4 h-4 text-blue-400" />
+      <div className="bg-white border border-gray-100 rounded-xl p-5 shadow-sm space-y-4">
+        <h3 className="text-sm font-bold text-gray-800 flex items-center gap-2 border-b border-gray-100 pb-3">
+          <FaLayerGroup className="text-blue-600" />
           Product Asset Valuation Breakdown
         </h3>
 
@@ -84,8 +84,8 @@ export default function InventoryReports() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-slate-300">
-              <thead className="bg-slate-800/80 text-slate-400 uppercase text-[10px] font-bold border-b border-slate-800">
+            <table className="w-full text-left text-xs text-gray-700">
+              <thead className="bg-gray-50 text-gray-500 uppercase text-[10px] font-bold border-b border-gray-100">
                 <tr>
                   <th className="py-2.5 px-3">SKU</th>
                   <th className="py-2.5 px-3">Product</th>
@@ -95,19 +95,19 @@ export default function InventoryReports() {
                   <th className="py-2.5 px-3 text-right">Total Asset Value</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/50">
+              <tbody className="divide-y divide-gray-100">
                 {products.map((p) => {
                   const val = (p.currentStock || 0) * (p.purchasePrice || 0);
                   return (
-                    <tr key={p._id} className="hover:bg-slate-800/30">
-                      <td className="py-2.5 px-3 font-mono text-blue-400">{p.sku}</td>
-                      <td className="py-2.5 px-3 font-bold text-white">{p.name}</td>
-                      <td className="py-2.5 px-3 text-slate-400">{p.category?.name || "-"}</td>
-                      <td className="py-2.5 px-3 text-right font-semibold text-slate-200">
+                    <tr key={p._id} className="hover:bg-gray-50/60 transition-colors">
+                      <td className="py-2.5 px-3 font-mono text-blue-600 font-bold">{p.sku}</td>
+                      <td className="py-2.5 px-3 font-bold text-gray-800">{p.name}</td>
+                      <td className="py-2.5 px-3 text-gray-600">{p.category?.name || "-"}</td>
+                      <td className="py-2.5 px-3 text-right font-bold text-gray-800">
                         {p.currentStock} {p.unit?.shortName}
                       </td>
-                      <td className="py-2.5 px-3 text-right text-slate-300">₹{p.purchasePrice?.toLocaleString("en-IN")}</td>
-                      <td className="py-2.5 px-3 text-right font-extrabold text-emerald-400">
+                      <td className="py-2.5 px-3 text-right text-gray-700">₹{p.purchasePrice?.toLocaleString("en-IN")}</td>
+                      <td className="py-2.5 px-3 text-right font-extrabold text-emerald-600">
                         ₹{val.toLocaleString("en-IN")}
                       </td>
                     </tr>

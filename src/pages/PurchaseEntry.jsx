@@ -1,11 +1,14 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { ShoppingCart, Save } from "lucide-react";
+import { FaShoppingCart, FaSave } from "react-icons/fa";
 
 export default function PurchaseEntry() {
   const { token } = useAuth();
+  const navigate = useNavigate();
+
   const [products, setProducts] = useState([]);
   const [warehouses, setWarehouses] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -16,8 +19,8 @@ export default function PurchaseEntry() {
     warehouseId: "",
     quantity: "",
     unitPrice: "",
-    supplier: "",
     referenceNo: "",
+    supplier: "",
     notes: "",
   });
 
@@ -34,11 +37,17 @@ export default function PurchaseEntry() {
         axios.get(`${baseUrl}/stock/warehouses`, { headers: { Authorization: `Bearer ${token}` } }),
       ]);
 
-      if (prodRes.data.status === "success") setProducts(prodRes.data.data);
+      if (prodRes.data.status === "success") {
+        setProducts(prodRes.data.data);
+        if (prodRes.data.data.length > 0) {
+          setFormData((prev) => ({
+            ...prev,
+            productId: prodRes.data.data[0]._id,
+            unitPrice: prodRes.data.data[0].purchasePrice || "",
+          }));
+        }
+      }
       if (whRes.data.status === "success") setWarehouses(whRes.data.data);
-
-      if (prodRes.data.data.length > 0) setFormData((prev) => ({ ...prev, productId: prodRes.data.data[0]._id }));
-      if (whRes.data.data.length > 0) setFormData((prev) => ({ ...prev, warehouseId: whRes.data.data[0]._id }));
     } catch (err) {
       console.error(err);
       toast.error("Failed to load products/warehouses");
@@ -49,8 +58,9 @@ export default function PurchaseEntry() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.productId || !formData.quantity || Number(formData.quantity) <= 0) {
-      return toast.error("Please select a product and enter a valid positive quantity");
+    if (!formData.productId || !formData.quantity) {
+      toast.error("Please select a product and enter quantity");
+      return;
     }
 
     setSubmitting(true);
@@ -59,12 +69,12 @@ export default function PurchaseEntry() {
       const payload = {
         transactionType: "purchase",
         productId: formData.productId,
-        warehouseId: formData.warehouseId || null,
+        warehouseId: formData.warehouseId || undefined,
         quantity: Number(formData.quantity),
         unitPrice: Number(formData.unitPrice) || 0,
-        supplier: formData.supplier,
-        referenceNo: formData.referenceNo || `PO-${Date.now().toString().slice(-6)}`,
-        notes: formData.notes,
+        referenceNo: formData.referenceNo || `PO-${Date.now()}`,
+        supplier: formData.supplier || undefined,
+        notes: formData.notes || "Purchase Entry",
       };
 
       const res = await axios.post(`${baseUrl}/stock/movements`, payload, {
@@ -72,15 +82,8 @@ export default function PurchaseEntry() {
       });
 
       if (res.data.status === "success") {
-        toast.success(`Purchase Entry saved! Total Stock Qty: ${res.data.currentStock}`);
-        setFormData({
-          ...formData,
-          quantity: "",
-          supplier: "",
-          referenceNo: "",
-          notes: "",
-        });
-        fetchData();
+        toast.success("Purchase entry saved!");
+        navigate("/stock/availability");
       }
     } catch (err) {
       console.error(err);
@@ -91,25 +94,25 @@ export default function PurchaseEntry() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
-      <div className="bg-slate-900/80 p-5 rounded-2xl border border-slate-800">
-        <h1 className="text-xl font-bold text-white flex items-center gap-2">
-          <ShoppingCart className="w-5 h-5 text-indigo-400" />
+    <div className="max-w-2xl mx-auto space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold text-gray-800 tracking-tight flex items-center gap-2">
+          <FaShoppingCart className="text-indigo-600" />
           Purchase Entry
         </h1>
-        <p className="text-xs text-slate-400 mt-1">
+        <p className="text-xs text-gray-500 mt-1">
           Record stock purchases from suppliers with unit cost and purchase order tracking
         </p>
       </div>
 
       {loading ? (
-        <div className="p-8 text-center">
+        <div className="p-8 text-center bg-white border border-gray-100 rounded-xl shadow-sm">
           <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-500 mx-auto"></div>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 space-y-5">
+        <form onSubmit={handleSubmit} className="bg-white border border-gray-100 rounded-xl p-6 shadow-sm space-y-5">
           <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1">Purchased Product *</label>
+            <label className="block text-xs font-semibold text-gray-700 mb-1">Purchased Product *</label>
             <select
               required
               value={formData.productId}
@@ -121,7 +124,7 @@ export default function PurchaseEntry() {
                   unitPrice: p ? p.purchasePrice : "",
                 });
               }}
-              className="w-full px-3.5 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-indigo-500"
+              className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs text-gray-800 focus:outline-none focus:border-indigo-500 focus:bg-white"
             >
               {products.map((p) => (
                 <option key={p._id} value={p._id}>
@@ -133,11 +136,11 @@ export default function PurchaseEntry() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1">Receiving Warehouse Location</label>
+              <label className="block text-xs font-semibold text-gray-700 mb-1">Receiving Warehouse Location</label>
               <select
                 value={formData.warehouseId}
                 onChange={(e) => setFormData({ ...formData, warehouseId: e.target.value })}
-                className="w-full px-3.5 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-indigo-500"
+                className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs text-gray-800 focus:outline-none focus:border-indigo-500 focus:bg-white"
               >
                 <option value="">General Location</option>
                 {warehouses.map((w) => (
@@ -147,7 +150,7 @@ export default function PurchaseEntry() {
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1">Purchased Quantity *</label>
+              <label className="block text-xs font-semibold text-gray-700 mb-1">Purchased Quantity *</label>
               <input
                 type="number"
                 required
@@ -155,66 +158,72 @@ export default function PurchaseEntry() {
                 placeholder="Enter quantity purchased..."
                 value={formData.quantity}
                 onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
-                className="w-full px-3.5 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-indigo-500"
+                className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs text-gray-800 focus:outline-none focus:border-indigo-500 focus:bg-white"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1">Vendor / Supplier Name</label>
+              <label className="block text-xs font-semibold text-gray-700 mb-1">Vendor / Supplier Name</label>
               <input
                 type="text"
                 placeholder="e.g. Global Tech Distributors"
                 value={formData.supplier}
                 onChange={(e) => setFormData({ ...formData, supplier: e.target.value })}
-                className="w-full px-3.5 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-indigo-500"
+                className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs text-gray-800 focus:outline-none focus:border-indigo-500 focus:bg-white"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1">Purchase Order / Bill No.</label>
+              <label className="block text-xs font-semibold text-gray-700 mb-1">Purchase Order / Bill No.</label>
               <input
                 type="text"
                 placeholder="e.g. PO-88901"
                 value={formData.referenceNo}
                 onChange={(e) => setFormData({ ...formData, referenceNo: e.target.value })}
-                className="w-full px-3.5 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-indigo-500 font-mono"
+                className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs text-gray-800 focus:outline-none focus:border-indigo-500 focus:bg-white"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1">Purchase Unit Cost (₹)</label>
+            <label className="block text-xs font-semibold text-gray-700 mb-1">Unit Cost Price (₹)</label>
             <input
               type="number"
               step="0.01"
               placeholder="0.00"
               value={formData.unitPrice}
               onChange={(e) => setFormData({ ...formData, unitPrice: e.target.value })}
-              className="w-full px-3.5 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-indigo-500"
+              className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs text-gray-800 focus:outline-none focus:border-indigo-500 focus:bg-white"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1">Notes / Terms</label>
+            <label className="block text-xs font-semibold text-gray-700 mb-1">Internal Notes</label>
             <textarea
               rows={2}
-              placeholder="Payment terms, warranty notes..."
+              placeholder="Add batch info, carrier billing, or tracking codes..."
               value={formData.notes}
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-              className="w-full px-3.5 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-indigo-500"
+              className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs text-gray-800 focus:outline-none focus:border-indigo-500 focus:bg-white"
             ></textarea>
           </div>
 
-          <div className="flex justify-end pt-2 border-t border-slate-800">
+          <div className="flex justify-end pt-3 border-t border-gray-100">
             <button
               type="submit"
               disabled={submitting}
-              className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold shadow-md shadow-indigo-600/30 flex items-center gap-2 transition-all disabled:opacity-50"
+              className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-sm flex items-center gap-2 transition-all disabled:opacity-50"
             >
-              <Save className="w-4 h-4" />
-              <span>Save Purchase Entry</span>
+              {submitting ? (
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+              ) : (
+                <>
+                  <FaSave />
+                  <span>Confirm Purchase Entry</span>
+                </>
+              )}
             </button>
           </div>
         </form>

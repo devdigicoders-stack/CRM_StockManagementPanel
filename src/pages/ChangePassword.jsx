@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import axios from "axios";
 import { toast } from "sonner";
-import { KeyRound, Lock, Save } from "lucide-react";
+import { FaKey, FaLock, FaSave } from "react-icons/fa";
 
 export default function ChangePassword() {
   const { token } = useAuth();
@@ -11,21 +11,13 @@ export default function ChangePassword() {
     newPassword: "",
     confirmPassword: "",
   });
-
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.currentPassword || !formData.newPassword) {
-      return toast.error("Please enter current and new password");
-    }
-
     if (formData.newPassword !== formData.confirmPassword) {
-      return toast.error("New password and confirm password do not match");
-    }
-
-    if (formData.newPassword.length < 6) {
-      return toast.error("New password must be at least 6 characters long");
+      toast.error("New passwords do not match!");
+      return;
     }
 
     setLoading(true);
@@ -37,11 +29,13 @@ export default function ChangePassword() {
           currentPassword: formData.currentPassword,
           newPassword: formData.newPassword,
         },
-        { headers: { Authorization: `Bearer ${token}` } }
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
 
-      if (res.data.status === "success" || res.data.success) {
-        toast.success("Password changed successfully!");
+      if (res.data.status === "success") {
+        toast.success("Password updated successfully!");
         setFormData({ currentPassword: "", newPassword: "", confirmPassword: "" });
       }
     } catch (err) {
@@ -54,56 +48,56 @@ export default function ChangePassword() {
 
   return (
     <div className="max-w-md mx-auto space-y-6">
-      <div className="bg-slate-900/80 p-5 rounded-2xl border border-slate-800 text-center">
-        <div className="w-12 h-12 rounded-2xl bg-blue-600/20 text-blue-400 border border-blue-500/30 flex items-center justify-center mx-auto mb-3">
-          <KeyRound className="w-6 h-6" />
+      <div className="bg-white border border-gray-100 p-6 rounded-xl shadow-sm text-center">
+        <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center mx-auto mb-3">
+          <FaKey className="w-5 h-5" />
         </div>
-        <h1 className="text-xl font-bold text-white">Change Account Password</h1>
-        <p className="text-xs text-slate-400 mt-1">Update your Stock Manager login password</p>
+        <h1 className="text-xl font-bold text-gray-800">Change Account Password</h1>
+        <p className="text-xs text-gray-500 mt-1">Update your Stock Manager login password</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 space-y-4">
+      <form onSubmit={handleSubmit} className="bg-white border border-gray-100 rounded-xl p-6 space-y-4 shadow-sm">
         <div>
-          <label className="block text-xs font-medium text-slate-300 mb-1">Current Password *</label>
+          <label className="block text-xs font-semibold text-gray-700 mb-1">Current Password *</label>
           <div className="relative">
-            <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+            <FaLock className="w-4 h-4 text-gray-400 absolute left-3 top-3.5" />
             <input
               type="password"
               required
               placeholder="••••••••"
               value={formData.currentPassword}
               onChange={(e) => setFormData({ ...formData, currentPassword: e.target.value })}
-              className="w-full pl-9 pr-3.5 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-blue-500"
+              className="w-full pl-9 pr-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs text-gray-800 focus:outline-none focus:border-blue-500 focus:bg-white"
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-slate-300 mb-1">New Password *</label>
+          <label className="block text-xs font-semibold text-gray-700 mb-1">New Password *</label>
           <div className="relative">
-            <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+            <FaLock className="w-4 h-4 text-gray-400 absolute left-3 top-3.5" />
             <input
               type="password"
               required
               placeholder="••••••••"
               value={formData.newPassword}
               onChange={(e) => setFormData({ ...formData, newPassword: e.target.value })}
-              className="w-full pl-9 pr-3.5 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-blue-500"
+              className="w-full pl-9 pr-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs text-gray-800 focus:outline-none focus:border-blue-500 focus:bg-white"
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-slate-300 mb-1">Confirm New Password *</label>
+          <label className="block text-xs font-semibold text-gray-700 mb-1">Confirm New Password *</label>
           <div className="relative">
-            <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+            <FaLock className="w-4 h-4 text-gray-400 absolute left-3 top-3.5" />
             <input
               type="password"
               required
               placeholder="••••••••"
               value={formData.confirmPassword}
               onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-              className="w-full pl-9 pr-3.5 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-blue-500"
+              className="w-full pl-9 pr-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs text-gray-800 focus:outline-none focus:border-blue-500 focus:bg-white"
             />
           </div>
         </div>
@@ -112,9 +106,9 @@ export default function ChangePassword() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-semibold shadow-md shadow-blue-600/30 flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+            className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-sm flex items-center justify-center gap-2 transition-all disabled:opacity-50"
           >
-            <Save className="w-4 h-4" />
+            <FaSave />
             <span>{loading ? "Updating..." : "Update Password"}</span>
           </button>
         </div>
