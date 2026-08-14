@@ -51,12 +51,10 @@ export default function DownloadReports() {
         p.category?.name || "-",
         p.currentStock,
         p.unit?.shortName || "units",
-        `Rs. ${p.purchasePrice || 0}`,
-        `Rs. ${(p.currentStock || 0) * (p.purchasePrice || 0)}`,
       ]);
 
       autoTable(doc, {
-        head: [["SKU", "Product", "Category", "Qty", "Unit", "Unit Price", "Total Value"]],
+        head: [["SKU", "Product", "Category", "Qty", "Unit"]],
         body: tableRows,
         startY: 28,
         theme: "grid",
@@ -116,11 +114,9 @@ export default function DownloadReports() {
         Category: p.category?.name || "",
         Brand: p.brand?.name || "",
         Unit: p.unit?.shortName || "",
-        "Purchase Price": p.purchasePrice,
         "Selling Price": p.sellingPrice,
         "Current Stock": p.currentStock,
         "Min Stock Level": p.minStockLevel,
-        "Total Inventory Value": (p.currentStock || 0) * (p.purchasePrice || 0),
         Status: p.status,
       }));
 

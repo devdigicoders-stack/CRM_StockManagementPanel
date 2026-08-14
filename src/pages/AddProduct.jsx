@@ -168,7 +168,6 @@ export default function AddProduct() {
         Category: "Electronics",
         Brand: "Logitech",
         Unit: "pcs",
-        "Purchase Price": 450,
         "Selling Price": 799,
         "Min Stock Level": 10,
         "Opening Stock": 50,
@@ -180,7 +179,6 @@ export default function AddProduct() {
         Category: "Home & Office Appliances",
         Brand: "Philips",
         Unit: "pcs",
-        "Purchase Price": 850,
         "Selling Price": 1499,
         "Min Stock Level": 5,
         "Opening Stock": 20,
@@ -332,18 +330,6 @@ export default function AddProduct() {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1">Cost / Purchase Price (₹)</label>
-              <input
-                type="number"
-                step="0.01"
-                placeholder="0.00"
-                value={formData.purchasePrice}
-                onChange={(e) => setFormData({ ...formData, purchasePrice: e.target.value })}
-                className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs text-gray-800 focus:outline-none focus:border-blue-500 focus:bg-white"
-              />
-            </div>
-
-            <div>
               <label className="block text-xs font-semibold text-gray-700 mb-1">Selling Price (₹)</label>
               <input
                 type="number"
@@ -487,7 +473,6 @@ export default function AddProduct() {
                       <th className="py-2.5 px-3">Category</th>
                       <th className="py-2.5 px-3">Brand</th>
                       <th className="py-2.5 px-3">Unit</th>
-                      <th className="py-2.5 px-3 text-right">Purchase Price</th>
                       <th className="py-2.5 px-3 text-right">Selling Price</th>
                       <th className="py-2.5 px-3 text-center">Opening Qty</th>
                     </tr>
@@ -502,9 +487,6 @@ export default function AddProduct() {
                         <td className="py-2 px-3 text-gray-600">{row.category || row.Category || "-"}</td>
                         <td className="py-2 px-3 text-gray-600">{row.brand || row.Brand || "-"}</td>
                         <td className="py-2 px-3 text-gray-600">{row.unit || row.Unit || "pcs"}</td>
-                        <td className="py-2 px-3 text-right font-medium">
-                          ₹{row.purchasePrice || row.PurchasePrice || row["Purchase Price"] || 0}
-                        </td>
                         <td className="py-2 px-3 text-right font-medium text-emerald-600">
                           ₹{row.sellingPrice || row.SellingPrice || row["Selling Price"] || 0}
                         </td>

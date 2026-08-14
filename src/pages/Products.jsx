@@ -196,7 +196,6 @@ export default function Products() {
                   <th className="py-3 px-4">Product Name</th>
                   <th className="py-3 px-4">Category</th>
                   <th className="py-3 px-4">Brand</th>
-                  <th className="py-3 px-4 text-right">Purchase Price</th>
                   <th className="py-3 px-4 text-right">Selling Price</th>
                   <th className="py-3 px-4 text-center">Stock Level</th>
                   <th className="py-3 px-4 text-center">Status</th>
@@ -218,9 +217,6 @@ export default function Products() {
                         </td>
                         <td className="py-3 px-4 text-gray-600">{p.category?.name || "-"}</td>
                         <td className="py-3 px-4 text-gray-600">{p.brand?.name || "-"}</td>
-                        <td className="py-3 px-4 text-right font-medium text-gray-800">
-                          ₹{p.purchasePrice?.toLocaleString("en-IN")}
-                        </td>
                         <td className="py-3 px-4 text-right font-medium text-emerald-600">
                           ₹{p.sellingPrice?.toLocaleString("en-IN")}
                         </td>

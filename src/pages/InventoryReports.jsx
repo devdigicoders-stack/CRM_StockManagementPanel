@@ -27,7 +27,6 @@ export default function InventoryReports() {
     }
   };
 
-  const totalValue = products.reduce((acc, p) => acc + (p.currentStock || 0) * (p.purchasePrice || 0), 0);
   const totalItems = products.reduce((acc, p) => acc + (p.currentStock || 0), 0);
   const lowStockItems = products.filter((p) => p.currentStock <= p.minStockLevel).length;
 
@@ -42,15 +41,7 @@ export default function InventoryReports() {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-        <div className="p-6 bg-white border border-gray-100 rounded-xl shadow-sm">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-semibold text-gray-500">Total Inventory Valuation</span>
-            <FaRupeeSign className="text-indigo-600 text-lg" />
-          </div>
-          <p className="text-2xl font-extrabold text-gray-800">₹{totalValue.toLocaleString("en-IN")}</p>
-          <p className="text-[11px] text-gray-400 mt-1">Based on purchase unit prices</p>
-        </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
 
         <div className="p-6 bg-white border border-gray-100 rounded-xl shadow-sm">
           <div className="flex items-center justify-between mb-2">
@@ -91,28 +82,19 @@ export default function InventoryReports() {
                   <th className="py-2.5 px-3">Product</th>
                   <th className="py-2.5 px-3">Category</th>
                   <th className="py-2.5 px-3 text-right">Available Qty</th>
-                  <th className="py-2.5 px-3 text-right">Unit Price</th>
-                  <th className="py-2.5 px-3 text-right">Total Asset Value</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {products.map((p) => {
-                  const val = (p.currentStock || 0) * (p.purchasePrice || 0);
-                  return (
-                    <tr key={p._id} className="hover:bg-gray-50/60 transition-colors">
-                      <td className="py-2.5 px-3 font-mono text-blue-600 font-bold">{p.sku}</td>
-                      <td className="py-2.5 px-3 font-bold text-gray-800">{p.name}</td>
-                      <td className="py-2.5 px-3 text-gray-600">{p.category?.name || "-"}</td>
-                      <td className="py-2.5 px-3 text-right font-bold text-gray-800">
-                        {p.currentStock} {p.unit?.shortName}
-                      </td>
-                      <td className="py-2.5 px-3 text-right text-gray-700">₹{p.purchasePrice?.toLocaleString("en-IN")}</td>
-                      <td className="py-2.5 px-3 text-right font-extrabold text-emerald-600">
-                        ₹{val.toLocaleString("en-IN")}
-                      </td>
-                    </tr>
-                  );
-                })}
+                {products.map((p) => (
+                  <tr key={p._id} className="hover:bg-gray-50/60 transition-colors">
+                    <td className="py-2.5 px-3 font-mono text-blue-600 font-bold">{p.sku}</td>
+                    <td className="py-2.5 px-3 font-bold text-gray-800">{p.name}</td>
+                    <td className="py-2.5 px-3 text-gray-600">{p.category?.name || "-"}</td>
+                    <td className="py-2.5 px-3 text-right font-bold text-gray-800">
+                      {p.currentStock} {p.unit?.shortName}
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>

@@ -38,7 +38,6 @@ export default function ImportExportProducts() {
         Category: "Electronics",
         Brand: "Logitech",
         Unit: "pcs",
-        "Purchase Price": 450,
         "Selling Price": 799,
         "Min Stock Level": 10,
         "Opening Stock": 50,
@@ -50,7 +49,6 @@ export default function ImportExportProducts() {
         Category: "Home & Office Appliances",
         Brand: "Philips",
         Unit: "pcs",
-        "Purchase Price": 850,
         "Selling Price": 1499,
         "Min Stock Level": 5,
         "Opening Stock": 20,
@@ -132,7 +130,7 @@ export default function ImportExportProducts() {
           </div>
 
           <p className="text-xs text-gray-500 leading-relaxed">
-            Download our standardized sample template first. Populate product title, SKU, purchase price, selling price, and opening stock count.
+            Download our standardized sample template first. Populate product title, SKU, selling price, and opening stock count.
           </p>
 
           <div className="pt-2 space-y-3">
